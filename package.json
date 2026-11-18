@@ -1,0 +1,35 @@
+{
+  "name": "my-mc-launcher",
+  "productName": "My Launcher",
+  "version": "1.0.0",
+  "description": "Minecraft Fabric 1.21.11 launcher",
+  "main": "src/main.js",
+  "author": "you",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --publish never"
+  },
+  "dependencies": {
+    "minecraft-java-core": "4.2.3"
+  },
+  "devDependencies": {
+    "electron": "^33.2.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.example.mylauncher",
+    "productName": "My Launcher",
+    "files": ["src/**/*", "package.json"],
+    "asarUnpack": ["node_modules/minecraft-java-core/**"],
+    "mac": {
+      "target": [{ "target": "dmg", "arch": ["arm64", "x64"] }],
+      "category": "public.app-category.games"
+    },
+    "win": {
+      "target": [{ "target": "nsis", "arch": ["x64"] }]
+    },
+    "nsis": { "oneClick": false, "allowToChangeInstallationDirectory": true },
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}"
+  }
+}
