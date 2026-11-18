@@ -3,30 +3,41 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'">
-<title>My Launcher</title>
+<title>ArchitektVisuals</title>
 <style>
-  :root { --bg:#14161a; --panel:#1c1f26; --line:#2b2f3a; --text:#e8eaf0; --dim:#8b91a0; --accent:#6ee7a8; }
+  :root { --bg:#14161a; --panel:#1c1f26; --line:#2b2f3a; --text:#e8eaf0; --dim:#8b91a0; --accent:#6ee7a8; --danger:#ff7b7b; }
   * { box-sizing:border-box; margin:0; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
   body { background:var(--bg); color:var(--text); height:100vh; display:grid; grid-template-columns:260px 1fr; }
   aside { background:var(--panel); border-right:1px solid var(--line); padding:28px 22px; display:flex; flex-direction:column; gap:18px; }
   h1 { font-size:20px; font-weight:700; }
+  h2 { font-size:15px; font-weight:600; }
   .ver { color:var(--dim); font-size:13px; }
-  main { padding:28px; display:flex; flex-direction:column; gap:16px; min-height:0; }
-  button { border:0; border-radius:8px; padding:12px 16px; font-size:15px; font-weight:600; cursor:pointer; background:var(--line); color:var(--text); }
+  main { padding:24px; display:flex; flex-direction:column; gap:14px; min-height:0; }
+  button { border:0; border-radius:8px; padding:10px 14px; font-size:14px; font-weight:600; cursor:pointer; background:var(--line); color:var(--text); }
   button.play { background:var(--accent); color:#0c1a12; font-size:17px; padding:16px; }
   button:disabled { opacity:.5; cursor:default; }
   button:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
   label { font-size:13px; color:var(--dim); display:block; margin-bottom:6px; }
   input[type=range] { width:100%; accent-color:var(--accent); }
-  .bar { height:8px; background:var(--line); border-radius:4px; overflow:hidden; }
+  .bar { height:8px; background:var(--line); border-radius:4px; overflow:hidden; flex-shrink:0; }
   .bar > div { height:100%; width:0; background:var(--accent); transition:width .15s; }
   #status { font-size:14px; color:var(--dim); }
+  .mods { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:14px; display:flex; flex-direction:column; gap:10px; }
+  .mods-head { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .mods-actions { display:flex; gap:8px; }
+  #modList { height:150px; overflow:auto; display:flex; flex-direction:column; gap:4px; }
+  .mod { display:flex; align-items:center; gap:10px; padding:6px 8px; border-radius:6px; background:#161920; font-size:13px; }
+  .mod .n { flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .mod.off .n { color:var(--dim); text-decoration:line-through; }
+  .mod button { padding:4px 10px; font-size:12px; }
+  .mod button.del { color:var(--danger); }
+  .empty { color:var(--dim); font-size:13px; padding:8px; }
   #log { flex:1; min-height:0; overflow:auto; background:#0f1115; border:1px solid var(--line); border-radius:8px; padding:12px; font:12px/1.5 ui-monospace, Menlo, Consolas, monospace; color:#aab0bd; white-space:pre-wrap; }
 </style>
 </head>
 <body>
 <aside>
-  <div><h1>My Launcher</h1><div class="ver">Minecraft 1.21.11 · Fabric</div></div>
+  <div><h1>ArchitektVisuals</h1><div class="ver">Minecraft 1.21.11 · Fabric</div></div>
   <div id="user" class="ver">Не авторизован</div>
   <button id="login">Войти через Microsoft</button>
   <button id="logout" hidden>Выйти</button>
@@ -39,6 +50,18 @@
 <main>
   <div id="status">Готов</div>
   <div class="bar"><div id="fill"></div></div>
+
+  <section class="mods">
+    <div class="mods-head">
+      <h2>Моды <span class="ver" id="modCount"></span></h2>
+      <div class="mods-actions">
+        <button id="modAdd">Добавить моды</button>
+        <button id="modOpen">Открыть папку</button>
+      </div>
+    </div>
+    <div id="modList"></div>
+  </section>
+
   <div id="log"></div>
 </main>
 <script src="renderer.js"></script>
