@@ -1,19 +1,22 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
 const MC_VERSION = '1.21.11';
 const gameDir = () => path.join(app.getPath('userData'), 'minecraft');
+const modsDir = () => path.join(gameDir(), 'mods');
 const accountFile = () => path.join(app.getPath('userData'), 'account.json');
+const ensureMods = () => fs.mkdirSync(modsDir(), { recursive: true });
 
 let win;
 let account = null;
 
 function createWindow() {
   win = new BrowserWindow({
-    width: 900,
-    height: 560,
+    width: 980,
+    height: 640,
     resizable: false,
+    title: 'ArchitektVisuals',
     backgroundColor: '#14161a',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -32,6 +35,7 @@ async function lib() {
 
 const send = (ch, data) => win && !win.isDestroyed() && win.webContents.send(ch, data);
 
+/* ---------- Аккаунт ---------- */
 ipcMain.handle('login', async () => {
   const { Microsoft } = await lib();
   const ms = new Microsoft();
@@ -56,8 +60,52 @@ ipcMain.handle('logout', async () => {
   if (fs.existsSync(accountFile())) fs.unlinkSync(accountFile());
 });
 
+/* ---------- Моды ---------- */
+ipcMain.handle('mods:list', () => {
+  ensureMods();
+  return fs
+    .readdirSync(modsDir())
+    .filter(f => f.endsWith('.jar') || f.endsWith('.jar.disabled'))
+    .sort((a, b) => a.localeCompare(b))
+    .map(f => ({ name: f, enabled: f.endsWith('.jar') }));
+});
+
+ipcMain.handle('mods:add', async () => {
+  ensureMods();
+  const r = await dialog.showOpenDialog(win, {
+    title: 'Выбери моды Fabric',
+    properties: ['openFile', 'multiSelections'],
+    filters: [{ name: 'Моды (.jar)', extensions: ['jar'] }]
+  });
+  if (r.canceled) return 0;
+  for (const f of r.filePaths) {
+    fs.copyFileSync(f, path.join(modsDir(), path.basename(f)));
+  }
+  return r.filePaths.length;
+});
+
+ipcMain.handle('mods:toggle', (_e, name) => {
+  const base = path.basename(name);
+  const from = path.join(modsDir(), base);
+  const to = base.endsWith('.disabled')
+    ? from.slice(0, -'.disabled'.length)
+    : from + '.disabled';
+  fs.renameSync(from, to);
+});
+
+ipcMain.handle('mods:remove', (_e, name) => {
+  fs.unlinkSync(path.join(modsDir(), path.basename(name)));
+});
+
+ipcMain.handle('mods:open', () => {
+  ensureMods();
+  return shell.openPath(modsDir());
+});
+
+/* ---------- Запуск ---------- */
 ipcMain.handle('play', async (_e, { ramGb }) => {
   if (!account) throw new Error('Сначала войди в аккаунт');
+  ensureMods();
   const { Launch } = await lib();
   const launcher = new Launch();
 
