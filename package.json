@@ -1,7 +1,8 @@
 {
-"name": "architektvisuals",
-"productName": "ArchitektVisuals",
-"description": "ArchitektVisuals Minecraft Fabric 1.21.11 launcher",
+  "name": "architektvisuals",
+  "productName": "ArchitektVisuals",
+  "version": "1.0.0",
+  "description": "ArchitektVisuals Minecraft Fabric 1.21.11 launcher",
   "main": "src/main.js",
   "author": "you",
   "license": "MIT",
@@ -17,8 +18,8 @@
     "electron-builder": "^25.1.8"
   },
   "build": {
-"appId": "com.architektvisuals.launcher",
-"productName": "ArchitektVisuals",
+    "appId": "com.architektvisuals.launcher",
+    "productName": "ArchitektVisuals",
     "files": ["src/**/*", "package.json"],
     "asarUnpack": ["node_modules/minecraft-java-core/**"],
     "mac": {
