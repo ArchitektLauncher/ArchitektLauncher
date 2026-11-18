@@ -1,8 +1,7 @@
 {
-  "name": "my-mc-launcher",
-  "productName": "My Launcher",
-  "version": "1.0.0",
-  "description": "Minecraft Fabric 1.21.11 launcher",
+"name": "architektvisuals",
+"productName": "ArchitektVisuals",
+"description": "ArchitektVisuals Minecraft Fabric 1.21.11 launcher",
   "main": "src/main.js",
   "author": "you",
   "license": "MIT",
